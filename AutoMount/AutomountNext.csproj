@@ -1,0 +1,111 @@
+<Project Sdk="Microsoft.NET.Sdk" InitialTargets="GenerateCustomPropsFile">
+	<Import Project="$(SolutionDir)GamePath.props" Condition="Exists('$(SolutionDir)GamePath.props')" />
+
+	<PropertyGroup>
+		<TargetFramework>net481</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<AssemblyName>AutomountNext</AssemblyName>
+		<Description>AutomountNext</Description>
+		<Version>2.0.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>latest</LangVersion>
+		<RootNamespace>AutomountNext</RootNamespace>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<RestoreAdditionalProjectSources>https://api.nuget.org/v3/index.json</RestoreAdditionalProjectSources>
+		<WrathData>$(LocalAppData)Low\Owlcat Games\Pathfinder Wrath Of The Righteous</WrathData>
+	</PropertyGroup>
+	<ItemGroup>
+	  <Using Include="System.Reflection" />
+	  <Using Include="HarmonyLib" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="$(WrathInstallDir)\Wrath_Data\Managed\Assembly-CSharp.dll*" Publicize="true" Private="false" />
+		<Reference Include="$(WrathInstallDir)\Wrath_Data\Managed\Assembly-CSharp-firstpass.dll*" Private="false" />
+		<Reference Include="$(WrathInstallDir)\Wrath_Data\Managed\Core*.dll" Private="false" />
+		<Reference Include="$(WrathInstallDir)\Wrath_Data\Managed\Newtonsoft.Json.dll*" Private="false" />
+		<Reference Include="$(WrathInstallDir)\Wrath_Data\Managed\Owlcat*.dll" Publicize="true" Private="false" />
+		<Reference Include="$(WrathInstallDir)\Wrath_Data\Managed\UniRx.dll*" Private="false" />
+		<Reference Include="$(WrathInstallDir)\Wrath_Data\Managed\Unity*.dll" Private="false" />
+		<Reference Include="$(WrathInstallDir)\Wrath_Data\Managed\UnityModManager\UnityModManager.dll*" Publicize="true" Private="false" />
+		<Reference Include="$(WrathInstallDir)\Wrath_Data\Managed\UnityModManager\0Harmony.dll*" Private="false" />
+		<Reference Include="$(WrathInstallDir)\Mods\ModMenu\ModMenu.dll" Private="false" />
+	</ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Img\*.png" />
+	</ItemGroup>
+	<Target Name="EmptyModDir" BeforeTargets="Build">
+		<PropertyGroup>
+			<CustomModPath>/games/Pathfinder Wrath of the Righteous/Mods</CustomModPath>
+		</PropertyGroup>
+		<ItemGroup>
+			<ModDir Include="$(CustomModPath)/$(AssemblyName)/*.*" />
+		</ItemGroup>
+
+		<Delete Files="@(ModDir)" />
+	</Target>
+	<ItemGroup>
+		<None Include="Info.json" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+	<Target Name="Deploy" AfterTargets="Build">
+		<PropertyGroup>
+			<ModDescription>$(Description.Replace(' ', '_'))</ModDescription>
+			<CustomModPath>/games/Pathfinder Wrath of the Righteous/Mods</CustomModPath>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<Assembly Include="$(OutputPath)AutomountNext.dll" />
+			<Assembly Include="$(OutputPath)BlueprintCore.dll" />
+			<ModConfig Include="$(OutputPath)Info.json" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(Assembly)" DestinationFolder="$(CustomModPath)/$(AssemblyName)" />
+		<Copy SourceFiles="@(ModConfig)" DestinationFolder="$(CustomModPath)/$(AssemblyName)" />
+
+		<ItemGroup>
+			<FilesToPackage Include="$(OutputPath)AutomountNext.dll" />
+			<FilesToPackage Include="$(OutputPath)BlueprintCore.dll" />
+			<FilesToPackage Include="$(OutputPath)Info.json" />
+		</ItemGroup>
+
+		<MakeDir Directories="$(MSBuildProjectDirectory)\$(OutputPath)\$(AssemblyName)" />
+		<Copy SourceFiles="@(FilesToPackage)" DestinationFolder="$(MSBuildProjectDirectory)\$(OutputPath)\$(AssemblyName)" />
+
+		<ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\$(OutputPath)" DestinationFile="$(SolutionDir)_Export\$(ModDescription)_v$(Version).zip" Overwrite="true" />
+	</Target>
+	<ItemGroup>
+		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" IncludeAssets="build; contentfiles" Version="0.4.2" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+		<PackageReference Include="MicroUtils.HarmonyAnalyzers" IncludeAssets="runtime; build; native; contentfiles; analyzers" Version="*-*" PrivateAssets="all" />
+		<PackageReference Include="WW-Blueprint-Core" Version="2.8.6" />
+	</ItemGroup>
+	<Target Name="GenerateCustomPropsFile" Condition="$(WrathInstallDir) == ''">
+		<Exec Command="findstr /C:&quot;Mono path[0]&quot; &quot;$(WrathData)\Player.log&quot;" IgnoreExitCode="true" ConsoleToMSBuild="true">
+			<Output TaskParameter="ExitCode" PropertyName="ExitCode" />
+			<Output TaskParameter="ConsoleOutput" PropertyName="MonoPathLine" />
+		</Exec>
+
+		<PropertyGroup>
+			<MonoPathRegex>^Mono path\[0\] = '(.*?)/Wrath_Data/Managed'$</MonoPathRegex>
+		</PropertyGroup>
+
+		<PropertyGroup>
+			<WrathInstallDir>$([System.Text.RegularExpressions.Regex]::Match($(MonoPathLine), $(MonoPathRegex)).Groups[1].Value)</WrathInstallDir>
+		</PropertyGroup>
+
+		<WriteLinesToFile File="$(SolutionDir)GamePath.props" Lines="&lt;Project xmlns='http://schemas.microsoft.com/developer/msbuild/2003'&gt;&#xD;&#xA;	&lt;PropertyGroup&gt;&#xD;&#xA;		&lt;WrathInstallDir&gt;$(WrathInstallDir)&lt;/WrathInstallDir&gt;&#xD;&#xA;	&lt;/PropertyGroup&gt;&#xD;&#xA;&lt;/Project&gt;" Overwrite="true" Encoding="utf-8" />
+	</Target>
+	<Target Name="DeleteFiles" BeforeTargets="Clean">
+		<ItemGroup>
+			<PropsFile Include="GamePath.props" />
+		</ItemGroup>
+		<ItemGroup>
+			<ExportDir Include="$(SolutionDir)_Export\*.zip" />
+		</ItemGroup>
+		
+		<Delete Files="@(PropsFile);@(ExportDir)" />
+	</Target>
+	<Target Name="PostClean" AfterTargets="Clean">
+		<RemoveDir Directories="$(OutDir)" />
+	</Target>
+</Project>
