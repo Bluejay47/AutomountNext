@@ -71,7 +71,7 @@
 		<MakeDir Directories="$(MSBuildProjectDirectory)\$(OutputPath)\$(AssemblyName)" />
 		<Copy SourceFiles="@(FilesToPackage)" DestinationFolder="$(MSBuildProjectDirectory)\$(OutputPath)\$(AssemblyName)" />
 
-		<ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\$(OutputPath)" DestinationFile="$(SolutionDir)_Export\$(ModDescription)_v$(Version).zip" Overwrite="true" />
+		<ZipDirectory SourceDirectory="$(MSBuildProjectDirectory)\$(OutputPath)\$(AssemblyName)" DestinationFile="$(SolutionDir)_Export\$(ModDescription)_v$(Version).zip" Overwrite="true" />
 	</Target>
 	<ItemGroup>
 		<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" IncludeAssets="build; contentfiles" Version="0.4.2" PrivateAssets="all" />
