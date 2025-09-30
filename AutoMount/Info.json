@@ -1,7 +1,7 @@
 {
     "Id": "AutoMountNext",
     "DisplayName": "AutoMountNext",
-    "Author": "Zepheon, DarthParametric, Bluejay47",
+    "Author": "Zepheon, DarthParametric, Jerry",
     "Version": "2.0.0",
     "GameVersion": "2.7.0",
     "ManagerVersion": "0.31.0",
@@ -9,6 +9,6 @@
     "LoadAfter": [ "MewsiferConsole.Mod", "TabletopTweaks-Core", "TabletopTweaks-Base", "MorePartySlots" ],
     "AssemblyName": "AutoMountNext.dll",
     "EntryMethod": "AutoMountNext.Main.Load",
-    "Repository": "https://github.com/Bluejay47/AutomountNext",
+    "Repository": "",
     "HomePage": ""
 }

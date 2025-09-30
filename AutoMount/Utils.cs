@@ -32,7 +32,7 @@ namespace AutoMountNext
 		/// <summary>
 		/// DEPRECATED: Use Utilities.CreateSprite() with embedded resource paths instead.
 		/// This method loads from file system and is no longer the standard approach.
-		/// Example: Utilities.CreateSprite("AutoMountNext.Img.filename.png")
+		/// Example: Utilities.CreateSprite("AutomountNext.Img.filename.png")
 		/// </summary>
 		[System.Obsolete("Use Utilities.CreateSprite() with embedded resource paths instead")]
 		public static Sprite LoadIcon(string fileName, Sprite fallback, int size = 128)
@@ -716,6 +716,12 @@ namespace AutoMountNext
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			using var stream = assembly.GetManifestResourceStream(embeddedImage);
+			if (stream == null)
+			{
+				Main.Logger.Error($"Failed to load embedded resource: {embeddedImage}");
+				Main.Logger.Error($"Available resources: {string.Join(", ", assembly.GetManifestResourceNames())}");
+				return null;
+			}
 			byte[] bytes = new byte[stream.Length];
 			stream.Read(bytes, 0, bytes.Length);
 			var texture = new Texture2D(128, 128, TextureFormat.RGBA32, false);

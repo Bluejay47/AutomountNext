@@ -1,4 +1,4 @@
-# AutoMountNext
+# AutomountNext
 
 A modernized mod for Owlcat's Pathfinder: Wrath of the Righteous that provides automatic mounting for animal companions with both manual controls and combat automation.
 
@@ -6,7 +6,7 @@ Based on AutoMount_for_TabletopTweaks (https://github.com/DarthParametric/AutoMo
 
 ## Overview
 
-AutoMountNext (v2.0.0) is a an alternative take on the original AutoMount mod, offering mount management that adapts to combat and exploration. The mod provides both immediate manual control and automation.
+AutomountNext (v2.0.0) is a an alternative take on the original AutoMount mod, offering mount management that adapts to combat and exploration. The mod provides both immediate manual control and intelligent automation.
 
 ## Key Features
 
@@ -73,13 +73,9 @@ Access additional settings through the in-game ModMenu including:
 
 - **Fully Compatible**: TabletopTweaks, More Party Slots, ModMenu
 - **Game Versions**: Current Wrath of the Righteous versions
-- **Save Compatibility**: Safe to add/remove from existing saves
+- **Save Compatibility**: NOT safe to add/remove from existing saves. The mod adds abilities and the existence of those abilities will break your save if you remove this mod.
 
 ## Version History
 
 - **v2.0.0**: Modernization with individual character control, combat automation, and enhanced compatibility
 - **v1.x**: Original AutoMount functionality with basic hotkey support and white lists
-
-
-## Dependencies
-Blueprint Core (https://github.com/WittleWolfie/WW-Blueprint-Core)

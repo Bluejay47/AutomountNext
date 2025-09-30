@@ -32,7 +32,7 @@ namespace AutoMountNext.Features {
         public static void Configure() {
             try {
                 BlueprintFeature baseAbility = BlueprintTool.Get<BlueprintFeature>(FeatureRefs.BolsteredSpellFeat.ToString());
-                var customIcon = Utilities.CreateSprite("AutoMountNext.Img.mountcombat.png");
+                var customIcon = Utilities.CreateSprite("AutomountNext.Img.mountcombat.png");
 
                 // Auto Mount When In Combat Toggle Buff
                 BuffConfigurator.New(buffName, buffGuid)

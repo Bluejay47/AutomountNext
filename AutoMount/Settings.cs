@@ -41,7 +41,12 @@ namespace AutoMountNext
 
 			MMSettings.SetMod(Main.modEntry);
 			MMSettings.SetModDescription(ModDesc);
-			MMSettings.SetModIllustration(Utilities.CreateSprite("AutoMountNext.Img.mountpeace.png"));
+
+			var illustration = Utilities.CreateSprite("AutomountNext.Img.mountpeace.png");
+			if (illustration != null)
+			{
+				MMSettings.SetModIllustration(illustration);
+			}
 
 			MMSettings.AddToggle(
 				Toggle.New(
