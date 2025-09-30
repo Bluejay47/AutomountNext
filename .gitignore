@@ -367,8 +367,3 @@ FodyWeavers.xsd
 GamePath.props
 _Export/
 _Reference/
-
-# Claude Code AI Assistant files
-CLAUDE.md
-session.md
-.claude/
